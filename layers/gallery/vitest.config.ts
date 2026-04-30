@@ -9,6 +9,9 @@ export default defineVitestProject({
 			nuxt: {
 				rootDir: fileURLToPath(new URL('.', import.meta.url)),
 				domEnvironment: 'happy-dom',
+				overrides: {
+					pages: false,
+				},
 			},
 		},
 	},
