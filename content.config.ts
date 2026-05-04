@@ -1,8 +1,10 @@
 import { defineCollection, defineContentConfig } from '@nuxt/content'
+import path from 'node:path'
 import * as z from 'zod'
 
 export default defineContentConfig({
 	collections: {
+		//#region Introduction
 		index: defineCollection({
 			type: 'page',
 			source: 'index.yml',
@@ -52,5 +54,16 @@ export default defineContentConfig({
 			type: 'page',
 			source: 'about.md',
 		}),
+		//#endregion
+
+		//#region Gallery
+		gallery: defineCollection({
+			type: 'page',
+			source: {
+				cwd: path.resolve('layers/gallery/content'),
+				include: 'index.yml',
+			},
+		}),
+		// #endregion
 	},
 })
