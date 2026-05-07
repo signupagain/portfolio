@@ -16,6 +16,9 @@
 				:	typeof +meta.params.id === 'number') || appConfig.error.notFound
 			)
 		},
+		key(route) {
+			return route.name
+		},
 	})
 
 	const { data: page } = await useFetch('/api/gallery')
@@ -31,17 +34,30 @@
 		description: page.value?.seo.description || page.value?.description,
 		ogDescription: page.value?.seo.description || page.value?.description,
 	})
+
+	const listEl = useTemplateRef('list')
+
+	onBeforeRouteUpdate((to, from) => {
+		if (
+			(to.name === 'gallery-id' && !!to.params.id) ||
+			(from.name === 'gallery-id' && !!from.params.id)
+		)
+			return
+
+		listEl.value?.getListEl()?.scrollTo(0, 0)
+	})
 </script>
 
 <template>
 	<main v-if="page">
-		<UPageHero
-			:title="page.title"
-			:description="page.description"
-			:ui="{
-				description: 'text-pretty',
-			}"
-		/>
+		<GalleryList ref="list"
+			><UPageHero
+				:title="page.title"
+				:description="page.description"
+				:ui="{
+					description: 'text-pretty',
+				}"
+		/></GalleryList>
 	</main>
 </template>
 
