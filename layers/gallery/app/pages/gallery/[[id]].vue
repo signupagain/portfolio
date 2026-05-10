@@ -1,4 +1,6 @@
 <script setup lang="ts">
+	import { useQuery } from '@tanstack/vue-query'
+
 	export type GalleryPageQuery = {
 		search?: string
 	}
@@ -46,18 +48,40 @@
 
 		listEl.value?.getListEl()?.scrollTo(0, 0)
 	})
+
+	const route = useRoute('gallery-id')
+	const id = computed(() => +(route.params.id || NaN))
+	const { data, suspense } = useQuery(usePhotoOptions(id))
+
+	onServerPrefetch(async () => {
+		if (isNaN(id.value)) return
+
+		const { error } = await suspense()
+
+		if (error && import.meta.dev) {
+			console.error('Error fetching photos:', error)
+		}
+	})
+
+	const cardData = computed<typeof data.value | null>((old) =>
+		isNaN(id.value) && old ? old : (data.value ?? null),
+	)
 </script>
 
 <template>
-	<main v-if="page">
-		<GalleryList ref="list"
-			><UPageHero
+	<main v-if="page" ref="page" class="h-screen overflow-y-scroll">
+		<GalleryList>
+			<UPageHero
 				:title="page.title"
 				:description="page.description"
 				:ui="{
 					description: 'text-pretty',
 				}"
-		/></GalleryList>
+			/>
+		</GalleryList>
+		<ClientOnly>
+			<LazyGalleryCard v-if="cardData" :data="cardData" />
+		</ClientOnly>
 	</main>
 </template>
 
