@@ -1,0 +1,4 @@
+title: 影像的詩學
+description: 這是一個基於Pexels API的網頁實作。搜尋紀錄使用LRU Cache技巧管理，使紀錄直觀調動；圖片則採由左至右，從上向下堆疊，為無限滾動的概念實作。
+image: /img/projects/gallery.webp
+url: '/gallery'
