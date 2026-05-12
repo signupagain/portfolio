@@ -1,0 +1,16 @@
+{
+	"name": "speed-dials",
+	"version": "0.0.0",
+	"type": "module",
+	"main": "./nuxt.config.ts",
+	"dependencies": {
+		"@nuxt/ui": ">=4.6.0",
+		"tailwindcss": ">=4.2.2"
+	},
+	"devDependencies": {
+		"sass-embedded": ">=1.92.1",
+		"typescript": ">=6.0.2",
+		"vue-tsc": ">=3.2.5",
+		"nuxt": ">=4.3.1"
+	}
+}
