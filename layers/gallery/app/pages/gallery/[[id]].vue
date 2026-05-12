@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { useQuery } from '@tanstack/vue-query'
+	import type { SpeedDialsProps } from '#layers/speedDials/app/components/SpeedDials.vue'
 
 	export type GalleryPageQuery = {
 		search?: string
@@ -66,6 +67,23 @@
 	const cardData = computed<typeof data.value | null>((old) =>
 		isNaN(id.value) && old ? old : (data.value ?? null),
 	)
+
+	const dials: SpeedDialsProps['dials'] = [
+		{
+			icon: 'lucide:chevron-up',
+			label: '回到頂部',
+			onClick: () => {
+				const el = listEl.value?.getListEl()
+
+				if (!el) return
+
+				el.scrollTo({
+					top: 0,
+					behavior: 'smooth',
+				})
+			},
+		},
+	]
 </script>
 
 <template>
@@ -82,6 +100,7 @@
 		<ClientOnly>
 			<LazyGalleryCard v-if="cardData" :data="cardData" />
 		</ClientOnly>
+		<SpeedDials :dials="dials" />
 	</main>
 </template>
 

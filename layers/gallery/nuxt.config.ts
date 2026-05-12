@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 export default defineNuxtConfig({
-	extends: ['../colorModeBtn'],
+	extends: ['../colorModeBtn', '../speedDials'],
 
 	runtimeConfig: {
 		pexelsURL: process.env.PEXELS_URL,
