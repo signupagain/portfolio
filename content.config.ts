@@ -64,6 +64,13 @@ export default defineContentConfig({
 				include: 'index.yml',
 			},
 		}),
+		galleryIntro: defineCollection({
+			type: 'page',
+			source: {
+				cwd: path.resolve('layers/gallery/content'),
+				include: 'intro.md',
+			},
+		}),
 		// #endregion
 	},
 })

@@ -2,6 +2,7 @@
 @import '@nuxt/ui';
 
 @source '../../../content/**/*';
+@source '#layers/gallery/content/**/*';
 
 @theme static {
 	--font-sans: 'Noto Sans TC', sans-serif;

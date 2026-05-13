@@ -68,6 +68,8 @@
 		isNaN(id.value) && old ? old : (data.value ?? null),
 	)
 
+	const introEl = useTemplateRef('intro')
+
 	const dials: SpeedDialsProps['dials'] = [
 		{
 			icon: 'lucide:chevron-up',
@@ -83,12 +85,21 @@
 				})
 			},
 		},
+		{
+			icon: 'lucide:book',
+			label: '頁面主旨',
+			onClick: () => {
+				if (!introEl.value) return
+
+				introEl.value.toggle()
+			},
+		},
 	]
 </script>
 
 <template>
-	<main v-if="page" ref="page" class="h-screen overflow-y-scroll">
-		<GalleryList>
+	<main v-if="page">
+		<GalleryList ref="list">
 			<UPageHero
 				:title="page.title"
 				:description="page.description"
@@ -100,6 +111,7 @@
 		<ClientOnly>
 			<LazyGalleryCard v-if="cardData" :data="cardData" />
 		</ClientOnly>
+		<GalleryIntro ref="intro" />
 		<SpeedDials :dials="dials" />
 	</main>
 </template>
