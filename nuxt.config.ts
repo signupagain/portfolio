@@ -4,6 +4,10 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 
 	$production: {
+		image: {
+			provider: 'netlify',
+		},
+
 		routeRules: {
 			'/': { prerender: true },
 			'/projects': { prerender: true },

@@ -62,9 +62,10 @@
 							/>
 						</ULink>
 					</template>
-					<img
+					<NuxtImg
 						:src="project.image"
 						:alt="project.title"
+						placeholder
 						class="h-48 w-full rounded-lg object-cover ring"
 					/>
 				</UPageCard>
