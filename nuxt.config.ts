@@ -61,6 +61,12 @@ export default defineNuxtConfig({
 		optimizeDeps: {
 			include: ['@tanstack/vue-query', 'ms', 'colord'],
 		},
+
+		server: {
+			watch: {
+				ignored: ['**/.nuxt/**', '**/.output/**', '**/*.db*'],
+			},
+		},
 	},
 
 	icon: {
