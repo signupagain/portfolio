@@ -1,6 +1,7 @@
 # certificates
 certs/
 *.pem
+public/file-browser*
 
 # Nuxt dev/build outputs
 .output
