@@ -9,8 +9,6 @@ declare namespace NodeJS {
 
 		/* Nelify */
 		readonly NETLIFY: string
-
-		/* File-Browser */
-		readonly FILE_SYSTEM_MAX_DEPTH: string
+		readonly URL: string
 	}
 }

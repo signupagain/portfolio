@@ -6,4 +6,10 @@ export default defineNuxtConfig({
 			include: ['dayjs'],
 		},
 	},
+
+	runtimeConfig: {
+		public: {
+			baseURL: process.env.URL || 'https://localhost:3000',
+		},
+	},
 })
