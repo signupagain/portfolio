@@ -72,5 +72,15 @@ export default defineContentConfig({
 			},
 		}),
 		// #endregion
+
+		//#region
+		fileBrowser: defineCollection({
+			type: 'page',
+			source: {
+				cwd: path.resolve('layers/fileBrowser/content'),
+				include: 'index.yml',
+			},
+		}),
+		//#endregion
 	},
 })

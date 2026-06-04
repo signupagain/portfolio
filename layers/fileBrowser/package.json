@@ -1,0 +1,19 @@
+{
+	"name": "file-browser",
+	"version": "0.0.0",
+	"type": "module",
+	"main": "./nuxt.config.ts",
+	"dependencies": {
+		"@nuxt/ui": ">=4.6.0",
+		"tailwindcss": ">=4.2.2",
+		"motion-v": ">=2.2.0",
+		"dayjs": ">=1.11.21"
+	},
+	"devDependencies": {
+		"@faker-js/faker": ">=10.4.0",
+		"@types/node": ">=25.5.0",
+		"typescript": ">=6.0.2",
+		"vue-tsc": ">=3.2.5",
+		"nuxt": ">=4.3.1"
+	}
+}
