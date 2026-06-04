@@ -1,4 +1,8 @@
 <script setup lang="ts">
+	definePageMeta({
+		layout: 'file-browser-default',
+	})
+
 	const { data: page } = await useFetch('/api/fileBrowser')
 
 	if (!page.value) {
