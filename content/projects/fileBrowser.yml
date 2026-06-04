@@ -1,0 +1,4 @@
+title: 檔案瀏覽器
+description: 這是一個檔案瀏覽器實作。可進行檔案和資料夾的瀏覽，也包括單選、多選和右鍵刪除操作。
+image: /img/projects/file-browser.webp
+url: '/file-browser'

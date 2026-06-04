@@ -13,3 +13,4 @@
 - [自我介紹](https://intro-project.netlify.app/)
 - [影像的詩學(圖片陳列)](https://intro-project.netlify.app/gallery)
 - [主題色切換](https://github.com/signupagain/projects/tree/master/layers/colorModeBtn/app/components): 該項目為可複用按鍵，且能判斷是否使用外掛的"深夜模式"擴充軟件
+- [檔案瀏覽器](https://intro-project.netlify.app/file-browser)
