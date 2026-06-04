@@ -1,4 +1,5 @@
 <script setup lang="ts">
+	import type { SpeedDialsProps } from '~~/layers/speedDials/app/components/SpeedDials.vue'
 	import { useFileBrowserDataStore } from '../stores/useFileBrowserDataStore'
 
 	definePageMeta({
@@ -27,6 +28,19 @@
 	onBeforeUnmount(() => {
 		dataStore.moveToNode(0)
 	})
+
+	const introEl = useTemplateRef('intro')
+	const dials: SpeedDialsProps['dials'] = [
+		{
+			icon: 'lucide:book',
+			label: '頁面主旨',
+			onClick: () => {
+				if (!introEl.value) return
+
+				introEl.value.toggle()
+			},
+		},
+	]
 </script>
 
 <template>
@@ -36,6 +50,8 @@
 		<ClientOnly>
 			<FileBrowserAside class="aside" :is-aside-visible="isAsideVisible" />
 		</ClientOnly>
+		<FileBrowserIntro ref="intro" />
+		<SpeedDials :dials="dials" class="right-4!" />
 		<FileBrowserFooter class="footer" />
 	</div>
 </template>

@@ -81,6 +81,13 @@ export default defineContentConfig({
 				include: 'index.yml',
 			},
 		}),
+		fileBrowserIntro: defineCollection({
+			type: 'page',
+			source: {
+				cwd: path.resolve('layers/fileBrowser/content'),
+				include: 'intro.md',
+			},
+		}),
 		//#endregion
 	},
 })
