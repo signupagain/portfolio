@@ -59,7 +59,7 @@ export default defineNuxtConfig({
 
 	vite: {
 		optimizeDeps: {
-			include: ['@tanstack/vue-query', 'ms', 'colord'],
+			include: ['dayjs', '@tanstack/vue-query', 'colord'],
 		},
 
 		server: {
