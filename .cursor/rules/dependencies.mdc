@@ -1,0 +1,10 @@
+---
+description: Strictly restrict code imports to match package.json dependencies and prevent hallucinated third-party imports.
+alwaysApply: true
+---
+
+# Strict Dependency and Import Rules
+
+- **No Hallucinated Imports**: Before adding any third-party import statement, you must ensure the package is explicitly listed under dependencies in the project's `package.json`.
+- **Prohibit Uninstalled Packages**: Do not guess, assume, or inject external libraries that are not installed in the workspace (e.g., do not import from `@tanstack/vue-virtual`).
+- **Leverage Existing Dependencies**: Always prioritize utilizing built-in components, composables, or types from currently installed packages (such as `@nuxt/ui`). If unsure, ask the user instead of introducing unknown import paths.
