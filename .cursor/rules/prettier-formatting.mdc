@@ -1,0 +1,15 @@
+---
+description: Ensure that generated code complies with the project's Prettier and ESLint standards.
+alwaysApply: true
+---
+
+# Code Style Check
+
+After creating or modifying code, always use the project's tools to automatically fix and check it.
+
+## Execution Steps
+
+1. Write or modify the target file.
+2. Run `npx prettier --write <path-to-modified-file>` to auto-format.
+3. Run `npx eslint --fix <path-to-modified-file>` to auto-fix formatting and syntax issues.
+4. If ESLint errors remain, manually fix the code based on the error messages.
