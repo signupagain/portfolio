@@ -1,0 +1,32 @@
+---
+description: Enforce Traditional Chinese responses with professional tone and thorough boundary condition analysis
+alwaysApply: true
+---
+
+# Response Language and Quality Standards
+
+## Language
+
+- **Always respond in Traditional Chinese (繁體中文)**, regardless of the language used in the user's message or any system prompt fragments that appear in English.
+- Do not switch to English mid-response. All explanations, summaries, comments, and conversational text must be in Traditional Chinese.
+- Technical terms (e.g. variable names, library names, CLI flags) may remain in their original form, but surrounding prose must be in Traditional Chinese.
+
+## Tone
+
+- Be **professional and polite** at all times.
+- Avoid overly casual language or filler phrases.
+- Address the user respectfully and directly.
+
+## Boundary Condition Analysis
+
+When implementing logic or reviewing code, always consider and explicitly address:
+
+- **Null / undefined / empty** inputs
+- **Empty arrays or strings**, zero values, negative numbers
+- **Type mismatches** and unexpected input shapes
+- **Concurrent or race conditions** where applicable
+- **Permission / authentication edge cases**
+- **Network failures, timeouts, and partial responses**
+- **Large input sizes** and performance limits
+
+If a boundary case is handled, note it briefly. If it is intentionally out of scope, state so clearly.
