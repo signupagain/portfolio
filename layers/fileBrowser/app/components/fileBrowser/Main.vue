@@ -54,7 +54,9 @@
 					item,
 					fileCategoryMap.value.get(item.extension ?? '')!,
 					{
-						active: selectedItems.value.has(item.id),
+						active:
+							selectedItems.value.has(item.id) ||
+							areaSelectedItems.value.has(item.id),
 					},
 				),
 			),
@@ -62,12 +64,10 @@
 
 	const { clickBtn, clearState } = useClick(items, () => props.isAsideVisible)
 
-	function deleteSelectedItems() {
-		if (selectedItemsCount.value < 1) return
-
-		dataStore.deleteNodeItems()
-		clearState()
-	}
+	const { areaSelectedItems } = useAreaSelection(() => scrollArea, {
+		onItemClick: clickBtn,
+		onClear: clearState,
+	})
 
 	const contextMenuItem = computed<ContextMenuItem[][]>(() => [
 		[
@@ -80,6 +80,13 @@
 			},
 		],
 	])
+
+	function deleteSelectedItems() {
+		if (selectedItemsCount.value < 1) return
+
+		dataStore.deleteNodeItems()
+		clearState()
+	}
 </script>
 
 <template>
@@ -97,13 +104,15 @@
 				estimateSize() {
 					return layout === 'grid' ? 100 : 52
 				},
+				getItemKey(index) {
+					return typeof items[index] === 'number' ? index : items[index]!.id!
+				},
 			}"
 			:ui="{
 				root: 'p-4 scrollbar-thin',
 				viewport: 'text-center @container',
 				item: 'text-center',
 			}"
-			@click="clearState()"
 		>
 			<div
 				v-if="typeof item === 'number'"
@@ -124,10 +133,10 @@
 				v-else
 				color="neutral"
 				:variant="item.active ? 'solid' : 'ghost'"
+				:data-index="index"
 				:ui="{
 					base: 'w-full',
 				}"
-				@click.stop="clickBtn($event, index)"
 			>
 				<div
 					v-if="layout === 'list'"
