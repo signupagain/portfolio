@@ -1,0 +1,31 @@
+---
+description: Do not read or exfiltrate files ignored by .gitignore via any agent channel, including Shell and MCP.
+alwaysApply: true
+---
+
+# Respect `.gitignore` Access Boundaries
+
+Cursor blocks Read/Grep/@ for ignored paths, but **Shell and MCP are not blocked**. Treat `.gitignore` as a hard access policy for the agent.
+
+## Rules
+
+- Do **not** read, print, copy, or summarize contents of paths ignored by `.gitignore` (e.g. `.env`, secrets, certs, local data).
+- Do **not** bypass ignores via Shell (`cat`, `head`, `less`, `cp`, redirection) or MCP tools.
+- Before accessing a path that may be sensitive or generated, verify with:
+
+```sh
+git check-ignore -v -- <path>
+```
+
+If the command prints a matching rule, **do not** read that path.
+
+## Exceptions
+
+- The user **explicitly** asks to open or inspect that specific ignored file in this turn.
+- Paths that git does **not** ignore (e.g. `.env.example` after `!.env.example`) remain readable.
+
+## Boundary notes
+
+- Empty / missing `.gitignore`: nothing extra is blocked by this rule.
+- Nested `.gitignore` files apply; use `git check-ignore` rather than guessing.
+- Untracked files that match ignore patterns are still off-limits.
