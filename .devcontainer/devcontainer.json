@@ -1,0 +1,65 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "portfolio",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	// 以 named volume 覆蓋 node_modules：Rebuild 後可複用、避開 bind mount 大量小檔 I/O
+	// 見 https://nuxt.com/docs/4.x/guide/best-practices/devcontainers
+	"mounts": ["type=volume,target=${containerWorkspaceFolder}/node_modules"],
+	// Features: https://containers.dev/features
+	// - typescript-node 映像已含 node-gyp 建置依賴（build-essential / python3）
+	// - uv-tool 安裝 graphifyy（PyPI 套件名）；安裝後 CLI 指令為 graphify
+	"features": {
+		"ghcr.io/devcontainers-extra/features/uv-tool:1": {
+			"package": "graphifyy"
+		},
+		"ghcr.io/devcontainers/features/node:2": {
+			"version": "none",
+			"pnpmVersion": "9.15.0"
+		}
+	},
+	// uv tool 安裝在非 root 使用者的 ~/.local/bin
+	// NODE_EXTRA_CA_CERTS：Node 額外信任專案 mkcert rootCA（檔案缺失時 Node 會警告並忽略）
+	"remoteEnv": {
+		"PATH": "/home/node/.local/bin:${containerEnv:PATH}",
+		"NODE_EXTRA_CA_CERTS": "${containerWorkspaceFolder}/certs/rootCA.pem"
+	},
+	// 安裝系統 CA、依賴、graphify；憑證防呆見 scripts/trust-certs.sh
+	"postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+	// 之後才補上 certs/*.pem 時，下次啟動仍會嘗試信任 rootCA
+	"postStartCommand": "bash .devcontainer/scripts/trust-certs.sh",
+	// Nuxt（app:3000）與 Grafana（sibling service）；彈窗提示開瀏覽器，不自動開啟
+	"forwardPorts": [3000, "grafana:3000"],
+	"portsAttributes": {
+		"3000": {
+			"label": "Nuxt Dev Server",
+			"protocol": "https",
+			"onAutoForward": "notify"
+		},
+		"grafana:3000": {
+			"label": "Grafana",
+			"protocol": "http",
+			"onAutoForward": "notify"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"wiggin77.codedox",
+				"dbaeumer.vscode-eslint",
+				"github.vscode-github-actions",
+				"antfu.iconify",
+				"yzhang.markdown-all-in-one",
+				"oxc.oxc-vscode",
+				"esbenp.prettier-vscode",
+				"bradlc.vscode-tailwindcss",
+				"antfu.vite",
+				"vitest.explorer",
+				"Vue.volar",
+				"MS-CEINTL.vscode-language-pack-zh-hant"
+			]
+		}
+	}
+}

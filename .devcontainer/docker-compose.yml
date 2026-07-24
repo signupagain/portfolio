@@ -1,0 +1,44 @@
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie
+    volumes:
+      # 掛載專案父目錄，workspaceFolder 指向 /workspaces/<repo>
+      - ../..:/workspaces:cached
+    ports:
+      - '3000:3000'
+    command: sleep infinity
+
+  grafana:
+    # Hub 無 major-only 標籤（:13）；以目前最新 minor 線 13.1 鎖定大版、允許 patch 漂動
+    image: grafana/grafana:13.1
+    restart: unless-stopped
+    # 宿主固定 3030（避開 Nuxt 3000）；IDE 彈窗見 devcontainer.json portsAttributes
+    ports:
+      - '3030:3000'
+    # 密碼等變數來自專案根目錄 .env（見 .env.example）；勿再以 environment 覆寫
+    env_file:
+      - ../.env
+    volumes:
+      - grafana_storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+
+  prometheus:
+    # v3 為 major floating tag，允許 3.x 小版／patch 升級
+    image: prom/prometheus:v3
+    restart: unless-stopped
+    # 僅供 compose 網路內使用（Grafana 連 http://prometheus:9090）
+    expose:
+      - '9090'
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      # 憑證位於專案根目錄 certs/（*.pem 已列入 .gitignore，見 certs/README.md）
+      # 防呆：三檔皆須存在，否則 compose 掛載失敗；請先備妥再 Rebuild（app 容器會另信任 rootCA）
+      - ../certs/localhost.pem:/etc/prometheus/localhost.pem:ro
+      - ../certs/localhost-key.pem:/etc/prometheus/localhost-key.pem:ro
+      - ../certs/rootCA.pem:/etc/prometheus/rootCA.pem:ro
+
+volumes:
+  grafana_storage:
+    name: grafana_persistent_data

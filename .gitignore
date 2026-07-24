@@ -1,8 +1,9 @@
 # graphify
 graphify-out/
 
-# certificates
-certs/
+# certificates — 追蹤 README，忽略實際憑證檔
+certs/*
+!certs/README.md
 *.pem
 public/file-browser*
 
