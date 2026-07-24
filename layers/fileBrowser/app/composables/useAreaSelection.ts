@@ -14,14 +14,8 @@ import {
 
 type AreaSelectionPosition = [x: number, y: number] | null
 
-interface UseAreaSelectionOptions {
-	onItemClick?: (event: PointerEvent, index: number) => void
-	onClear?: () => void
-}
-
 export const useAreaSelection = (
 	getTarget: () => ShallowRef<ComponentExposed<typeof UScrollArea> | null>,
-	options: UseAreaSelectionOptions = {},
 ) => {
 	const dataStore = useFileBrowserDataStore()
 	const { displayedNodes } = storeToRefs(dataStore)
@@ -140,28 +134,11 @@ export const useAreaSelection = (
 		removeOverlay()
 	}
 
-	function handleItemClick(pointerEvent: PointerEvent) {
-		if (pointerEvent.button !== 0) return
-
-		const target = pointerEvent.target
-
-		if (!(target instanceof Element)) {
-			options.onClear?.()
-			return
-		}
-
-		const itemEl = target.closest('[data-index]')
-
-		if (itemEl instanceof HTMLElement) {
-			const index = Number(itemEl.dataset.index)
-
-			if (!Number.isNaN(index)) {
-				options.onItemClick?.(pointerEvent, index)
-				return
-			}
-		}
-
-		options.onClear?.()
+	/** Read and clear the swipe flag so a following click can be suppressed once. */
+	function consumeDidSwipe() {
+		const value = didSwipe.value
+		didSwipe.value = false
+		return value
 	}
 
 	usePointerSwipe(() => getTarget().value?.$el, {
@@ -195,19 +172,8 @@ export const useAreaSelection = (
 		},
 	})
 
-	useEventListener(
-		() => getTarget().value?.$el,
-		'pointerup',
-		(event) => {
-			if (!didSwipe.value) {
-				handleItemClick(event)
-			}
-
-			didSwipe.value = false
-		},
-	)
-
 	return {
 		areaSelectedItems: readonly(areaSelectedItems),
+		consumeDidSwipe,
 	}
 }
