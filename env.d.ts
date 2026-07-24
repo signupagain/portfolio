@@ -7,8 +7,7 @@ declare namespace NodeJS {
 		/* VueQuery */
 		readonly VUE_QUERY_STALE_TIME: string
 
-		/* Nelify */
+		/* Netlify */
 		readonly NETLIFY: string
-		readonly URL: string
 	}
 }

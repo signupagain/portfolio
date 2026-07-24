@@ -51,8 +51,6 @@ type Stack = Array<{
 }>
 
 export const useNodes = () => {
-	const config = useRuntimeConfig()
-
 	const stack = shallowRef<Stack>([])
 	const currentNode = computed(() => stack.value.at(-1) || null)
 
@@ -128,8 +126,8 @@ export const useNodes = () => {
 
 		try {
 			const responses = await Promise.all([
-				fetch(`${config.public.baseURL}/file-browser.json`),
-				fetch(`${config.public.baseURL}/file-browser-types.json`),
+				fetch('/file-browser.json'),
+				fetch('/file-browser-types.json'),
 			])
 
 			const [data, types] = (await Promise.all(
