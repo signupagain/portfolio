@@ -111,12 +111,7 @@ export const useNodes = () => {
 	)
 
 	function _pushNodes(nodes: Stack | Stack[number]) {
-		if (Array.isArray(nodes)) {
-			stack.value = [...stack.value, ...nodes]
-		} else {
-			stack.value.push(nodes)
-			triggerRef(stack)
-		}
+		stack.value = [...stack.value, ...(Array.isArray(nodes) ? nodes : [nodes])]
 	}
 
 	async function initialize() {

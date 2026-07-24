@@ -4,12 +4,10 @@ export const useSelectedItem = () => {
 	const selectedItemsCount = computed(() => selectedItems.value.size)
 
 	function pushSelectedItems(id: Item['id'][] | Item['id']) {
-		if (Array.isArray(id)) {
-			selectedItems.value = new Set([...selectedItems.value, ...id])
-		} else {
-			selectedItems.value.add(id)
-			triggerRef(selectedItems)
-		}
+		selectedItems.value = new Set([
+			...selectedItems.value,
+			...(Array.isArray(id) ? id : [id]),
+		])
 	}
 
 	function deleteSelectedItem(id: Item['id']) {
@@ -23,8 +21,7 @@ export const useSelectedItem = () => {
 	}
 
 	function clearSelectedItems() {
-		selectedItems.value.clear()
-		triggerRef(selectedItems)
+		selectedItems.value = new Set()
 	}
 
 	return {
