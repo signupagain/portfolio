@@ -4,6 +4,7 @@ import type { UScrollArea } from '#components'
 
 interface UseItemPointerEventsOptions {
 	onItemClick?: (event: PointerEvent, index: number) => void
+	onItemContextMenu?: (index: number) => void
 	onClear?: () => void
 	/** Called on pointerup; return true to skip click (e.g. after area selection). */
 	shouldSuppressClick?: () => boolean
@@ -47,6 +48,18 @@ export const useItemPointerEvents = (
 			if (options.shouldSuppressClick?.()) return
 
 			handleItemClick(event)
+		},
+	)
+
+	useEventListener(
+		() => getTarget().value?.$el,
+		'contextmenu',
+		(event) => {
+			const index = resolveItemIndex(event)
+
+			if (index === null) return
+
+			options.onItemContextMenu?.(index)
 		},
 	)
 }

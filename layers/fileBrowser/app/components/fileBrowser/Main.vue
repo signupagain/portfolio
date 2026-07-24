@@ -62,7 +62,10 @@
 			),
 	)
 
-	const { clickBtn, clearState } = useClick(items, () => props.isAsideVisible)
+	const { clickBtn, contextSelect, clearState } = useClick(
+		items,
+		() => props.isAsideVisible,
+	)
 
 	const { areaSelectedItems, consumeDidSwipe } = useAreaSelection(
 		() => scrollArea,
@@ -70,6 +73,7 @@
 
 	useItemPointerEvents(() => scrollArea, {
 		onItemClick: clickBtn,
+		onItemContextMenu: contextSelect,
 		onClear: clearState,
 		shouldSuppressClick: consumeDidSwipe,
 	})

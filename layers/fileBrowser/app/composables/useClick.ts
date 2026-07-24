@@ -78,6 +78,25 @@ export const useClick = (
 		}
 	}
 
+	function contextSelect(index: number) {
+		const item = items.value[index]
+
+		if (typeof item === 'number' || !item) return
+
+		shiftAnchorIndex.value = index
+
+		if (selectedItems.value.has(item.id)) return
+
+		dataStore.clearSelectedItems()
+		dataStore.pushSelectedItems(item.id)
+
+		if (item.type === 'file') {
+			dataStore.setActiveItem(item.id)
+		} else {
+			dataStore.deleteActiveItem()
+		}
+	}
+
 	function clearState() {
 		shiftAnchorIndex.value = -1
 		dataStore.clearSelectedItems()
@@ -86,6 +105,7 @@ export const useClick = (
 
 	return {
 		clickBtn,
+		contextSelect,
 		clearState,
 	}
 }
