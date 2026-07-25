@@ -9,6 +9,13 @@
 
 	const BREADCRUMB_COLLAPSE_THRESHOLD = 4
 
+	defineProps<{
+		title: string
+	}>()
+
+	const dataStore = useFileBrowserDataStore()
+	const { stack, layout, searchValue, sortBy, order } = storeToRefs(dataStore)
+
 	const radioItems: RadioGroupItem[] = [
 		{
 			label: 'i-lucide-grid-3x3',
@@ -24,7 +31,13 @@
 
 	const sortByOptions: SelectItem[] = [
 		{ label: '名稱', value: 'name' },
-		{ label: '大小', value: 'size' },
+		{
+			label: '大小',
+			value: 'size',
+			onSelect() {
+				dataStore.accumulateStackFolderSizes()
+			},
+		},
 		{ label: '類型', value: 'kind' },
 		{ label: '日期', value: 'date' },
 	]
@@ -33,13 +46,6 @@
 		{ label: '升序', value: 'ascending' },
 		{ label: '降序', value: 'descending' },
 	]
-
-	defineProps<{
-		title: string
-	}>()
-
-	const dataStore = useFileBrowserDataStore()
-	const { stack, layout, searchValue, sortBy, order } = storeToRefs(dataStore)
 
 	type BreadcrumbItemWithIndex = BreadcrumbItem & {
 		index?: number
