@@ -47,10 +47,10 @@ export default defineNuxtModule({
 
 				const data = generateFileSystem()
 
-				await writeFile(dataOutputPath, JSON.stringify(data, null, 2), 'utf-8')
+				await writeFile(dataOutputPath, JSON.stringify(data), 'utf-8')
 				await writeFile(
 					fileExtensionSpecsOutputPath,
-					JSON.stringify(fileExtensionSpecs, null, 2),
+					JSON.stringify(fileExtensionSpecs),
 					'utf-8',
 				)
 
