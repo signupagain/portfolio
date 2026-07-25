@@ -50,7 +50,7 @@ type Stack = Array<{
 	nodes: Item[]
 }>
 
-export const useNodes = () => {
+export const useFileTree = () => {
 	// --- state: navigation ---
 	const stack = shallowRef<Stack>([])
 	const currentNode = computed(() => stack.value.at(-1) || null)

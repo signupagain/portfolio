@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import type { Item } from '../composables/useNodes'
+import type { Item } from '../composables/useFileTree'
 import { formatBytes } from './formatBytes'
 
 export interface DisplayedItemCategory {

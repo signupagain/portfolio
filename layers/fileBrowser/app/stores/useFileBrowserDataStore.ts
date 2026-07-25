@@ -1,15 +1,15 @@
-import type { LayoutType } from '../composables/useNodes'
+import type { LayoutType } from '../composables/useFileTree'
 
 export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 	const layout = ref<LayoutType>('grid')
 	const drawerBtn = ref<HTMLElement | null>(null)
 
-	const nodesData = useNodes()
+	const fileTree = useFileTree()
 	const activeItemData = useActiveItem()
 	const selectedItemData = useSelectedItem()
 
 	function moveToNode(value: Item['id'] | number): void {
-		nodesData.moveToNode(value)
+		fileTree.moveToNode(value)
 		activeItemData.deleteActiveItem()
 		selectedItemData.clearSelectedItems()
 	}
@@ -20,7 +20,7 @@ export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 		const toDeleteList: number[] = []
 		const activeItemValue = activeItemData.activeItem.value
 
-		nodesData.currentNode.value?.nodes.forEach((node, idx) => {
+		fileTree.currentNode.value?.nodes.forEach((node, idx) => {
 			if (selectedItemData.selectedItems.value.has(node.id)) {
 				toDeleteList.push(idx)
 
@@ -31,20 +31,20 @@ export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 			}
 		})
 
-		nodesData.deleteNodeItems(toDeleteList)
+		fileTree.deleteNodeItems(toDeleteList)
 		selectedItemData.clearSelectedItems()
 	}
 
 	function setActiveItem(id: string) {
 		const target =
-			nodesData.currentNode.value?.nodes.find((node) => node.id === id) || null
+			fileTree.currentNode.value?.nodes.find((node) => node.id === id) || null
 
 		if (!target) {
 			return
 		}
 
 		if (target.type === 'folder') {
-			nodesData.accumulateFolderSize(target)
+			fileTree.accumulateFolderSize(target)
 		}
 
 		activeItemData.setActiveItem(target)
@@ -63,7 +63,7 @@ export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 	}
 
 	return {
-		...nodesData,
+		...fileTree,
 		...activeItemData,
 		...selectedItemData,
 
