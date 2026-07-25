@@ -1,10 +1,10 @@
-export type LayoutType = 'grid' | 'list'
+export type FileLayout = 'grid' | 'list'
 
-export type SortType = 'name' | 'size' | 'kind' | 'date'
+export type FileSort = 'name' | 'size' | 'kind' | 'date'
 
-export type OrderType = 'ascending' | 'descending'
+export type FileOrder = 'ascending' | 'descending'
 
-interface BaseItem {
+interface BaseFileItem {
 	id: string
 	name: string
 	path: string
@@ -15,16 +15,16 @@ interface BaseItem {
 	extension?: string
 }
 
-export interface FileItem extends BaseItem {
+export interface FileItem extends BaseFileItem {
 	type: 'file'
 }
 
-export interface FolderItem extends BaseItem {
+export interface FolderItem extends BaseFileItem {
 	type: 'folder'
-	children: Item[]
+	children: FileNode[]
 }
 
-export type Item = FileItem | FolderItem
+export type FileNode = FileItem | FolderItem
 
 interface Extension {
 	name: string
@@ -44,16 +44,18 @@ type FileGroupMap = Map<
 	Omit<FileCategory, 'extensions'> & { label: Extension['label'] }
 >
 
-type Stack = Array<{
+export interface FileStackFrame {
 	dirname: string
 	folder: FolderItem | null
-	nodes: Item[]
-}>
+	nodes: FileNode[]
+}
+
+type FileStack = FileStackFrame[]
 
 export const useFileTree = () => {
 	// --- state: navigation ---
-	const stack = shallowRef<Stack>([])
-	const currentNode = computed(() => stack.value.at(-1) || null)
+	const stack = shallowRef<FileStack>([])
+	const currentDirectory = computed(() => stack.value.at(-1) || null)
 
 	// --- state: categories ---
 	const _fileCategories = ref<FileCategories | null>(null)
@@ -77,15 +79,15 @@ export const useFileTree = () => {
 	const searchValue = ref<string>('')
 	const debouncedSearchValue = refDebounced(searchValue, 300)
 
-	const _searchFn = (item: Item) =>
-		item.name.includes(debouncedSearchValue.value)
+	const _searchFn = (node: FileNode) =>
+		node.name.includes(debouncedSearchValue.value)
 
-	const order = ref<OrderType>('ascending')
+	const order = ref<FileOrder>('ascending')
 
 	const _orderFn = (value: number) =>
 		isNaN(value) ? 0 : value * (order.value === 'ascending' ? 1 : -1)
 
-	const sortBy = ref<SortType>('kind')
+	const sortBy = ref<FileSort>('kind')
 
 	const _filterFn = {
 		name: (a, b) => _orderFn(a.name.localeCompare(b.name)),
@@ -93,30 +95,33 @@ export const useFileTree = () => {
 		kind: (a, b) =>
 			_orderFn((a.extension || '').localeCompare(b.extension || '')),
 		date: (a, b) => _orderFn(a.modified - b.modified),
-	} satisfies Record<SortType, (a: Item, b: Item) => number>
+	} satisfies Record<FileSort, (a: FileNode, b: FileNode) => number>
 
 	// --- derived ---
 	const displayedNodes = computed(() =>
-		(currentNode.value?.nodes || [])
+		(currentDirectory.value?.nodes || [])
 			.filter(_searchFn)
 			.sort(_filterFn[sortBy.value]),
 	)
 
 	const currentFolderCount = computed(
 		() =>
-			currentNode.value?.nodes.filter((item) => item.type === 'folder')
+			currentDirectory.value?.nodes.filter((node) => node.type === 'folder')
 				.length || 0,
 	)
 
 	const currentFileCount = computed(
 		() =>
-			currentNode.value?.nodes.filter((item) => item.type === 'file').length ||
-			0,
+			currentDirectory.value?.nodes.filter((node) => node.type === 'file')
+				.length || 0,
 	)
 
 	// --- private: stack helpers ---
-	function _pushNodes(nodes: Stack | Stack[number]) {
-		stack.value = [...stack.value, ...(Array.isArray(nodes) ? nodes : [nodes])]
+	function _pushDirectory(frames: FileStack | FileStackFrame) {
+		stack.value = [
+			...stack.value,
+			...(Array.isArray(frames) ? frames : [frames]),
+		]
 	}
 
 	function _assertOrdered(indexArray: number[]) {
@@ -176,7 +181,7 @@ export const useFileTree = () => {
 
 	/**
 	 * 由 stack 當前層往上，對已快取 size 的 folder 強制重算（root 無 folder 物件，跳過）。
-	 * 任何會改變 children 而可能讓 size 失效的操作（目前僅 deleteNodeItems）完成後應呼叫。
+	 * 任何會改變 children 而可能讓 size 失效的操作（目前僅 deleteNodes）完成後應呼叫。
 	 */
 	function _recalculateAncestorFolderSizes() {
 		for (let i = stack.value.length - 1; i > 0; i--) {
@@ -209,9 +214,9 @@ export const useFileTree = () => {
 
 					return res.json()
 				}),
-			)) as [Item[], FileCategories]
+			)) as [FileNode[], FileCategories]
 
-			_pushNodes({ dirname: 'root', folder: null, nodes: data })
+			_pushDirectory({ dirname: 'root', folder: null, nodes: data })
 			_fileCategories.value = types
 		} catch (error) {
 			console.error('getDataSeed error:\n', error)
@@ -225,19 +230,21 @@ export const useFileTree = () => {
 		return true
 	}
 
-	function moveToNode(value: Item['id'] | number): void {
-		if (currentNode.value === null) {
-			throw createError('currentNode should not be null.')
+	function moveTo(value: FileNode['id'] | number): void {
+		if (currentDirectory.value === null) {
+			throw createError('currentDirectory should not be null.')
 		}
 
 		if (typeof value === 'string') {
-			const target = currentNode.value.nodes.find((node) => node.id === value)
+			const target = currentDirectory.value.nodes.find(
+				(node) => node.id === value,
+			)
 
 			if (!target || target.type !== 'folder') {
 				throw createError('target should be a folder.')
 			}
 
-			_pushNodes([
+			_pushDirectory([
 				{ dirname: target.name, folder: target, nodes: target.children },
 			])
 
@@ -248,7 +255,7 @@ export const useFileTree = () => {
 		triggerRef(stack)
 	}
 
-	function deleteNodeItems(toDeleteList: number[]) {
+	function deleteNodes(toDeleteList: number[]) {
 		if (toDeleteList.length === 0) return
 
 		_assertOrdered(toDeleteList)
@@ -267,20 +274,20 @@ export const useFileTree = () => {
 		}
 
 		if (write > 0 || stack.value.length === 1) {
-			const newNode = { ...stack.value[stack.value.length - 1]! }
+			const nextFrame = { ...stack.value[stack.value.length - 1]! }
 
-			newNode.nodes.length = write
+			nextFrame.nodes.length = write
 
 			if (stack.value.length > 1) {
-				newNode.folder!.children.length = write
+				nextFrame.folder!.children.length = write
 			}
 
-			stack.value.splice(stack.value.length - 1, 1, newNode)
+			stack.value.splice(stack.value.length - 1, 1, nextFrame)
 		} else if (stack.value.length > 1) {
-			const node = stack.value.pop()!
+			const frame = stack.value.pop()!
 
-			node.folder!.children.length = 0
-			node.folder!.size = 0
+			frame.folder!.children.length = 0
+			frame.folder!.size = 0
 		}
 
 		// 刪除會改變當前與祖先 folder 的內容，需由深到淺重算已快取的 size
@@ -296,7 +303,7 @@ export const useFileTree = () => {
 	}
 
 	/** 計算 root nodes 內尚未有 size 的 folder（root 已涵蓋整棵樹；已算出則跳過） */
-	function accumulateStackFolderSizes() {
+	function accumulateFileTreeFolderSizes() {
 		const root = stack.value[0]
 		if (!root) return
 
@@ -312,7 +319,7 @@ export const useFileTree = () => {
 	return {
 		// state / derived
 		stack,
-		currentNode,
+		currentDirectory,
 		_fileCategories,
 		fileCategoryMap,
 		searchValue,
@@ -324,9 +331,9 @@ export const useFileTree = () => {
 
 		// actions
 		initialize,
-		moveToNode,
-		deleteNodeItems,
+		moveTo,
+		deleteNodes,
 		accumulateFolderSize,
-		accumulateStackFolderSizes,
+		accumulateFileTreeFolderSizes,
 	}
 }

@@ -3,7 +3,7 @@ import { access, writeFile } from 'fs/promises'
 import { faker } from '@faker-js/faker'
 import { fileExtensionSpecs } from './utils/fileExtensionSpecs'
 
-type FileType = {
+type FileNode = {
 	id: string
 	name: string
 	type: 'folder' | 'file'
@@ -13,7 +13,7 @@ type FileType = {
 
 	size?: number
 	extension?: string
-	children?: FileType[]
+	children?: FileNode[]
 }
 
 export default defineNuxtModule({
@@ -75,7 +75,7 @@ export default defineNuxtModule({
 				depth: number = 0,
 				parentPath: string = '',
 				parentId: string = '',
-			): FileType[] {
+			): FileNode[] {
 				const numItems =
 					depth === 0 ? 2000 : faker.number.int({ min: 2, max: 3 })
 				const extensions = fileExtensionSpecs

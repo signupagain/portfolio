@@ -74,7 +74,7 @@ export const useItemInteraction = (
 				const end = Math.max(shiftAnchorIndex.value, index)
 
 				dataStore.pushSelectedItems(
-					displayedNodes.value.slice(start, end + 1).map((node) => node.id),
+					displayedNodes.value.slice(start, end + 1).map((entry) => entry.id),
 				)
 			}
 
@@ -119,7 +119,7 @@ export const useItemInteraction = (
 
 		clearFolderDrawerTimer()
 		drawerBtn.value = null
-		dataStore.moveToNode(item.id)
+		dataStore.moveTo(item.id)
 	}
 
 	/** Enter on a focused item: open folder (no content) or show file content. No ctrl/shift variants. */

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import type { Item } from '../composables/useFileTree'
+import type { FileNode } from '../composables/useFileTree'
 import { formatBytes } from './formatBytes'
 
 export interface DisplayedItemCategory {
@@ -10,7 +10,7 @@ export interface DisplayedItemCategory {
 
 export interface DisplayedItem {
 	id: string
-	type: Item['type']
+	type: FileNode['type']
 	title: string
 	description: string
 	icon: string
@@ -21,7 +21,7 @@ export interface DisplayedItem {
 }
 
 export function toDisplayedItem(
-	item: Item,
+	item: FileNode,
 	category: DisplayedItemCategory,
 	options?: { active?: boolean },
 ): DisplayedItem {

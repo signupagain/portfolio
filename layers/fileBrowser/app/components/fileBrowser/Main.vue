@@ -18,7 +18,7 @@
 
 	defineShortcuts({
 		ctrl_a: () => {
-			dataStore.pushSelectedItems(displayedNodes.value.map((item) => item.id))
+			dataStore.pushSelectedItems(displayedNodes.value.map((entry) => entry.id))
 		},
 		Delete: deleteSelectedItems,
 	})
@@ -49,14 +49,14 @@
 	const items = computed<(number | DisplayedItem)[]>(() =>
 		!isLoaded.value ?
 			skeletonWidths.value
-		:	displayedNodes.value.map((item) =>
+		:	displayedNodes.value.map((entry) =>
 				toDisplayedItem(
-					item,
-					fileCategoryMap.value.get(item.extension ?? '')!,
+					entry,
+					fileCategoryMap.value.get(entry.extension ?? '')!,
 					{
 						active:
-							selectedItems.value.has(item.id) ||
-							areaSelectedItems.value.has(item.id),
+							selectedItems.value.has(entry.id) ||
+							areaSelectedItems.value.has(entry.id),
 					},
 				),
 			),
@@ -93,7 +93,7 @@
 	function deleteSelectedItems() {
 		if (selectedItemsCount.value < 1) return
 
-		dataStore.deleteNodeItems()
+		dataStore.deleteNodes()
 		clearState()
 	}
 </script>

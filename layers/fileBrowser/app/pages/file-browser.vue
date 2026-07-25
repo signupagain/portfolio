@@ -26,7 +26,7 @@
 	const isAsideVisible = computed(() => width.value >= 1024)
 
 	onBeforeUnmount(() => {
-		dataStore.moveToNode(0)
+		dataStore.moveTo(0)
 	})
 
 	const introEl = useTemplateRef('intro')

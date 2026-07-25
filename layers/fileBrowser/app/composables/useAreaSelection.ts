@@ -24,7 +24,7 @@ export const useAreaSelection = (
 	const pendingAreaSelectionRect = shallowRef<PendingRect | null>(null)
 	const areaSelectionStart = ref<AreaSelectionPosition>(null)
 	const areaSelectionEnd = ref<AreaSelectionPosition>(null)
-	const areaSelectedItems = shallowRef<Set<Item['id']>>(new Set())
+	const areaSelectedItems = shallowRef<Set<FileNode['id']>>(new Set())
 	const didSwipe = ref(false)
 
 	const createOverlay = () => {
@@ -76,7 +76,7 @@ export const useAreaSelection = (
 		]
 	}
 
-	function resolveSelectedItemIds(): Item['id'][] {
+	function resolveSelectedItemIds(): FileNode['id'][] {
 		const virtualizer = getTarget()?.value?.virtualizer
 		const containerEl = getTarget()?.value?.$el
 

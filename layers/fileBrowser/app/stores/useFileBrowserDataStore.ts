@@ -1,26 +1,26 @@
-import type { LayoutType } from '../composables/useFileTree'
+import type { FileLayout, FileNode } from '../composables/useFileTree'
 
 export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
-	const layout = ref<LayoutType>('grid')
+	const layout = ref<FileLayout>('grid')
 	const drawerBtn = ref<HTMLElement | null>(null)
 
 	const fileTree = useFileTree()
 	const activeItemData = useActiveItem()
 	const selectedItemData = useSelectedItem()
 
-	function moveToNode(value: Item['id'] | number): void {
-		fileTree.moveToNode(value)
+	function moveTo(value: FileNode['id'] | number): void {
+		fileTree.moveTo(value)
 		activeItemData.deleteActiveItem()
 		selectedItemData.clearSelectedItems()
 	}
 
-	function deleteNodeItems() {
+	function deleteNodes() {
 		if (selectedItemData.selectedItems.value.size === 0) return
 
 		const toDeleteList: number[] = []
 		const activeItemValue = activeItemData.activeItem.value
 
-		fileTree.currentNode.value?.nodes.forEach((node, idx) => {
+		fileTree.currentDirectory.value?.nodes.forEach((node, idx) => {
 			if (selectedItemData.selectedItems.value.has(node.id)) {
 				toDeleteList.push(idx)
 
@@ -31,13 +31,14 @@ export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 			}
 		})
 
-		fileTree.deleteNodeItems(toDeleteList)
+		fileTree.deleteNodes(toDeleteList)
 		selectedItemData.clearSelectedItems()
 	}
 
 	function setActiveItem(id: string) {
 		const target =
-			fileTree.currentNode.value?.nodes.find((node) => node.id === id) || null
+			fileTree.currentDirectory.value?.nodes.find((node) => node.id === id) ||
+			null
 
 		if (!target) {
 			return
@@ -70,8 +71,8 @@ export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 		layout,
 		drawerBtn,
 
-		moveToNode,
-		deleteNodeItems,
+		moveTo,
+		deleteNodes,
 		setActiveItem,
 		clearActiveIfMissing,
 	}

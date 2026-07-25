@@ -1,16 +1,16 @@
 export const useSelectedItem = () => {
-	const selectedItems = shallowRef<Set<Item['id']>>(new Set())
+	const selectedItems = shallowRef<Set<FileNode['id']>>(new Set())
 
 	const selectedItemsCount = computed(() => selectedItems.value.size)
 
-	function pushSelectedItems(id: Item['id'][] | Item['id']) {
+	function pushSelectedItems(id: FileNode['id'][] | FileNode['id']) {
 		selectedItems.value = new Set([
 			...selectedItems.value,
 			...(Array.isArray(id) ? id : [id]),
 		])
 	}
 
-	function deleteSelectedItem(id: Item['id']) {
+	function deleteSelectedItem(id: FileNode['id']) {
 		const result = selectedItems.value.delete(id)
 
 		if (result) {

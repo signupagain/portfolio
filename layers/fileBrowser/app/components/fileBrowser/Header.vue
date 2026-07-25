@@ -35,7 +35,7 @@
 			label: '大小',
 			value: 'size',
 			onSelect() {
-				dataStore.accumulateStackFolderSizes()
+				dataStore.accumulateFileTreeFolderSizes()
 			},
 		},
 		{ label: '類型', value: 'kind' },
@@ -81,7 +81,7 @@
 					({
 						label,
 						onSelect() {
-							dataStore.moveToNode(index)
+							dataStore.moveTo(index)
 						},
 					}) satisfies DropdownMenuItem,
 			),
@@ -105,7 +105,7 @@
 				variant="outline"
 				aria-label="回上一層"
 				:disabled="breadcrumbItems.length === 1"
-				@click="dataStore.moveToNode(stack.length - 2)"
+				@click="dataStore.moveTo(stack.length - 2)"
 			/>
 			<UBreadcrumb
 				:items="breadcrumbItems"
@@ -120,7 +120,7 @@
 						:color="breadcrumbColor(item.index!, stack.length)"
 						:disabled="item.index === stack.length - 1"
 						:aria-current="item.index === stack.length - 1 ? 'page' : undefined"
-						@click="dataStore.moveToNode(item.index!)"
+						@click="dataStore.moveTo(item.index!)"
 						>{{ item.label }}</UButton
 					>
 				</template>
