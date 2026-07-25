@@ -1,7 +1,7 @@
 export const useActiveItem = () => {
-	const activeItem = ref<FileItem | null>(null)
+	const activeItem = ref<Item | null>(null)
 
-	function setActiveItem(item: FileItem) {
+	function setActiveItem(item: Item) {
 		activeItem.value = item
 	}
 

@@ -39,8 +39,12 @@ export const useFileBrowserDataStore = defineStore('FileBrowserData', () => {
 		const target =
 			nodesData.currentNode.value?.nodes.find((node) => node.id === id) || null
 
-		if (target?.type !== 'file') {
-			throw new Error('target with id should be a file.')
+		if (!target) {
+			return
+		}
+
+		if (target.type === 'folder') {
+			nodesData.accumulateFolderSize(target)
 		}
 
 		activeItemData.setActiveItem(target)

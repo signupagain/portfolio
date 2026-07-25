@@ -18,10 +18,10 @@
 			return target
 		}
 
-		const props = fileCategoryMap.value.get(target.extension!)
+		const props = fileCategoryMap.value.get(target.extension ?? '')
 
 		if (!props) {
-			throw new Error('Unknown file type: ' + target.extension)
+			throw new Error('Unknown file type: ' + (target.extension ?? ''))
 		}
 
 		const { active, ...displayed } = toDisplayedItem(target, props)
