@@ -27,6 +27,9 @@ logs
 .fleet
 .idea
 
+# Dev Container：Host → Container 暫存的 git aliases（勿提交）
+.devcontainer/.tmp_git_aliases
+
 # Local env files
 .env
 .env.*

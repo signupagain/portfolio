@@ -26,10 +26,14 @@
 		"PATH": "/home/node/.local/bin:${containerEnv:PATH}",
 		"NODE_EXTRA_CA_CERTS": "${containerWorkspaceFolder}/certs/rootCA.pem"
 	},
+	// Host：複製本機 .git_aliases 到暫存檔（WSL／Linux／macOS／Git Bash）。
+	// 勿用 windows→cmd：Cursor/VS Code 在 WSL 常誤判為 windows，卻以 bash 執行，導致 cmd not found 讓 rebuild 失敗。
+	// 缺 bash／缺檔一律略過，不阻斷開箱。純 Windows 無 bash 時僅跳過 aliases 同步。
+	"initializeCommand": "bash .devcontainer/scripts/copy-host-git-aliases.sh || true",
 	// 安裝系統 CA、依賴、graphify；憑證防呆見 scripts/trust-certs.sh
 	"postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
-	// 之後才補上 certs/*.pem 時，下次啟動仍會嘗試信任 rootCA
-	"postStartCommand": "bash .devcontainer/scripts/trust-certs.sh",
+	// 之後才補上 certs/*.pem 時，下次啟動仍會嘗試信任 rootCA；並安裝 Host 同步的 git aliases
+	"postStartCommand": "bash .devcontainer/scripts/trust-certs.sh && bash .devcontainer/scripts/install-git-aliases.sh",
 	// Nuxt（app:3000）與 Grafana（sibling service）；彈窗提示開瀏覽器，不自動開啟
 	"forwardPorts": [3000, "grafana:3000"],
 	"portsAttributes": {
