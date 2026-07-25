@@ -1,0 +1,2 @@
+# Shell scripts：強制 LF，避免 Windows CRLF 在 Linux / Dev Container 內執行失敗
+*.sh text eol=lf
